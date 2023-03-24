@@ -53,7 +53,7 @@ function handleSubmit(e) {
         if(pictures.length > 1) {const markup = (pictures)
             .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
                 return `<div class="photo-card">
-                <a href="${largeImageURL}">
+                <a href='${largeImageURL}'>
                 <img src="${webformatURL}" alt="${tags}" loading="lazy" 
                 width=360
                 height=240/> </a>
