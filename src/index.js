@@ -1,6 +1,8 @@
 // const axios = require('axios/dist/node/axios.cjs');
 const axios = require('axios').default;
 import Notiflix from 'notiflix';
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
 
 const form = document.querySelector('#search-form');
 const input = document.querySelector('input');
@@ -51,9 +53,10 @@ function handleSubmit(e) {
         if(pictures.length > 1) {const markup = (pictures)
             .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
                 return `<div class="photo-card">
+                <a href="${largeImageURL}">
                 <img src="${webformatURL}" alt="${tags}" loading="lazy" 
                 width=360
-                height=240/>
+                height=240/> </a>
                 <div class="info">
                 <p class="info-item">
                 <b>Likes <span class="info-numbers">${likes}</span></b>
@@ -75,20 +78,12 @@ function handleSubmit(e) {
             Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
         }
             else Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-            
-        
-        }
-    
-   
-       
-    
-    
-    
-    
+                   
+        } 
      
 }
 
-
+const lightbox = new SimpleLightbox('.gallery a');
 
 
 
