@@ -26,36 +26,4 @@
   background-position: center;
 }
 
-.search-form {
-  background-color: rgba(4, 4, 157, 0.675);
-  height: 45px;
-  display: flex;
-  padding-block: 7px;
-  justify-content: center;
-  box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, 0.75);
-}
-
-.inputStyle {
-  width: 350px;
-  border-right: 0px;
-  font-size: 12px;
-  padding-left: 8px;
-  border-color: transparent;
-  border-bottom-left-radius: 2px;
-  border-top-left-radius: 2px;
-  outline: none;
-}
-
-.formBtnStyle {
-  width: 40px;
-  cursor: pointer;
-  padding: 2px;
-  border-bottom-right-radius: 2px;
-  border-top-right-radius: 2px;
-  border-left: 0px;
-  border-color: transparent;
-  background-image: url(../images/107701422-lupa-wektor-ikona-na-białym-tle-na-przezroczystym-tle-koncepcja-logo-lupy.png);
-  background-size: contain;
-  background-position: center center;
-  background-repeat: no-repeat;
-}/*# sourceMappingURL=index.css.map */
+/*# sourceMappingURL=index.css.map */
