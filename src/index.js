@@ -1,9 +1,8 @@
 // const axios = require('axios/dist/node/axios.cjs');
+const axios = require('axios').default;
 
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
-const axios = require('axios').default;
-
 import Notiflix from 'notiflix';
 
 
@@ -14,33 +13,43 @@ const formBtn = document.querySelector('button');
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
 
+
+
 input.classList.add('inputStyle');
 formBtn.classList.add('formBtnStyle');
+
 form.addEventListener('submit', handleSubmit);
 
+    
+
+
+let page = 1;
+let per_page = 40;
 
 
 function handleSubmit(e) {
     e.preventDefault();
+      
     let {elements: { searchQuery }} = e.currentTarget;
-    // let page = 1;
+    
     const searchParams = new URLSearchParams({
         key: '34670935-84395b17b2cc27de21cd2945c',
         q: `${searchQuery.value}`,
         image_type: 'photo',
         orientation: 'horizontal',
         safesearch: 'true',
-        // page: page,
-        per_page: 40,    
+        page: page,
+        per_page: per_page,    
     });
 
-        
+    
     getPictures()
     .then(response => {
         renderPictures(response);
-            })
-
-    .catch(function (error) {
+        page += 1; 
+              
+    })     
+       .catch(function (error) {
         if(error.response) {
             console.log(error.response.data);
         }
@@ -55,16 +64,27 @@ function handleSubmit(e) {
     
     async function getPictures() {
             const response = await axios.get(`https://pixabay.com/api/?${searchParams}`);
-            console.log(response);            
+            console.log(response);  
+            console.log(`https://pixabay.com/api/?${searchParams}`)          
             return response;            
     }   
-    
     
 
     function renderPictures(response) {
         const totalHits = response.data.total;
         const pictures =  response.data.hits;
-        if(totalHits > 1) {
+        const totalPages = Math.ceil(totalHits / per_page);
+        console.log(page);
+        console.log(totalPages);
+
+        if (pictures.length < 1) {
+            Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+        }
+        else if (page > totalPages) {
+            Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");            
+        }
+         else if(totalHits > 1) {
+            loadMoreBtn.classList.add('isVisible');
             const markup = (pictures)
             .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
                 return `                
@@ -92,16 +112,12 @@ function handleSubmit(e) {
                 `;
             })        
             .join('');
-            gallery.innerHTML = markup;
-            const lightbox = new SimpleLightbox('.gallery a');  
+            gallery.insertAdjacentHTML("beforeend", markup);
+            const lightbox = new SimpleLightbox('.gallery a');
+            lightbox.refresh();  
             Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
-        }
-            else Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-                   
-        } 
-
-        
-          
+        }       
+    } 
 }
 
 
