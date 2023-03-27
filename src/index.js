@@ -1,11 +1,8 @@
-// const axios = require('axios/dist/node/axios.cjs');
 const axios = require('axios').default;
 
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import Notiflix from 'notiflix';
-
-
 
 
 const form = document.querySelector('#search-form');
@@ -15,28 +12,27 @@ const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
 
 
-
 input.classList.add('inputStyle');
 formBtn.classList.add('formBtnStyle');
 
 let page = 1;
 let per_page = 40;
-// let searchedValue = form.elements.searchQuery.value
-// console.log(searchedValue);
 
-
-
-console.log(form.elements.searchQuery.value)
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
+    gallery.innerHTML = '';
+    loadMoreBtn.classList.remove('isVisible');
+    page = 1;
+
     getPictures()
     .then(response => {
         renderPictures(response);
         page += 1;
-        console.log(page);
+        // console.log(page);
+       
               
-    })    
+    })   
     .catch(function (error) {
         if(error.response) {
             console.log(error.response.data);
@@ -52,11 +48,13 @@ form.addEventListener('submit', (e) => {
 });
 
 loadMoreBtn.addEventListener('click', () => {
+    
     getPictures()
     .then(response => {
         renderPictures(response);
         page += 1;
-        console.log(page);
+        // console.log(page);
+       
               
     })    
     .catch(function (error) {
@@ -77,7 +75,6 @@ async function getPictures() {
 
     const searchParams = new URLSearchParams({
         key: '34670935-84395b17b2cc27de21cd2945c',
-        // q: form.elements.searchQuery.value,
         image_type: 'photo',
         orientation: 'horizontal',
         safesearch: 'true',
@@ -85,9 +82,9 @@ async function getPictures() {
         per_page: per_page,    
     });
 
-    const response = await axios.get('https://pixabay.com/api/?' + `${searchParams}&q=` + form.elements.searchQuery.value);   
-    console.log(response);  
-    console.log('https://pixabay.com/api/?' + `${searchParams}&q=` + form.elements.searchQuery.value);          
+    const response = await axios.get('https://pixabay.com/api/?' + `${searchParams}&q=` + form.elements.searchQuery.value);
+    const url = ('https://pixabay.com/api/?' + `${searchParams}&q=` + form.elements.searchQuery.value);
+    // console.log(url);          
     return response;            
 }   
 
@@ -96,19 +93,12 @@ function renderPictures(response) {
     const pictures =  response.data.hits;
     const totalPages = Math.ceil(totalHits / per_page);
     
-    // console.log(searchedPics);
-    console.log(page);
-    console.log(totalPages);    
-
-    if (pictures.length < 1 ) {
-        Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-    }    
-    else {
-        loadMoreBtn.classList.add('isVisible');
-        Notiflix.Notify.success(`"Hooray! We found ${totalHits} images."`);           
-        const markup = (pictures)
+    // console.log(page);
+    // console.log(totalPages);        
+        
+    const markup = (pictures)
         .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
-            return `                
+        return `                
             <div class="photo-card">
             <a href="${largeImageURL}">
             <img src="${webformatURL}" alt="${tags}" loading="lazy" 
@@ -135,15 +125,25 @@ function renderPictures(response) {
         .join('');
         gallery.insertAdjacentHTML("beforeend", markup);
         lightbox.refresh(); 
+        
+        const { height: cardHeight } = document.querySelector(".gallery").firstElementChild.getBoundingClientRect();
+        window.scrollBy({
+            top: cardHeight * 2,
+            behavior: "smooth",
+        });
 
         if (page > totalPages) {
             Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");            
-        } 
+        }
+        else if (pictures.length < 1 ) {
+            Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+        }    
+        else {
+            loadMoreBtn.classList.add('isVisible');
+            Notiflix.Notify.success(`"Hooray! We found ${totalHits} images."`)}
+       
     }     
-} 
-
-
-
+ 
 
 const lightbox = new SimpleLightbox('.gallery a');
 
