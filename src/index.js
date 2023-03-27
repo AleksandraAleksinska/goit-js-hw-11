@@ -7,6 +7,7 @@ import Notiflix from 'notiflix';
 
 
 
+
 const form = document.querySelector('#search-form');
 const input = document.querySelector('input');
 const formBtn = document.querySelector('button');
@@ -19,10 +20,7 @@ input.classList.add('inputStyle');
 formBtn.classList.add('formBtnStyle');
 
 form.addEventListener('submit', handleSubmit);
-
-    
-
-
+ 
 let page = 1;
 let per_page = 40;
 
@@ -31,7 +29,7 @@ function handleSubmit(e) {
     e.preventDefault();
       
     let {elements: { searchQuery }} = e.currentTarget;
-    
+    const searchedPics = e.currentTarget.searchQuery.value;
     const searchParams = new URLSearchParams({
         key: '34670935-84395b17b2cc27de21cd2945c',
         q: `${searchQuery.value}`,
@@ -41,15 +39,17 @@ function handleSubmit(e) {
         page: page,
         per_page: per_page,    
     });
+    
+    
 
     
     getPictures()
     .then(response => {
         renderPictures(response);
-        page += 1; 
+        page += 1;
               
     })     
-       .catch(function (error) {
+    .catch(function (error) {
         if(error.response) {
             console.log(error.response.data);
         }
@@ -74,17 +74,20 @@ function handleSubmit(e) {
         const totalHits = response.data.total;
         const pictures =  response.data.hits;
         const totalPages = Math.ceil(totalHits / per_page);
+        
+        console.log(searchedPics);
         console.log(page);
         console.log(totalPages);
 
-        if (pictures.length < 1) {
+        
+
+        if (pictures.length < 1 || searchedPics === '') {
             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
         }
-        else if (page > totalPages) {
-            Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");            
-        }
-         else if(totalHits > 1) {
+        
+        else {
             loadMoreBtn.classList.add('isVisible');
+            Notiflix.Notify.success(`"Hooray! We found ${totalHits} images."`);           
             const markup = (pictures)
             .map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
                 return `                
@@ -113,14 +116,17 @@ function handleSubmit(e) {
             })        
             .join('');
             gallery.insertAdjacentHTML("beforeend", markup);
-            const lightbox = new SimpleLightbox('.gallery a');
-            lightbox.refresh();  
-            Notiflix.Notify.success(`Hooray! We found ${totalHits} images.`);
-        }       
+            lightbox.refresh(); 
+
+            if (page > totalPages) {
+                Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");            
+            } 
+        }     
     } 
+   
 }
 
-
+const lightbox = new SimpleLightbox('.gallery a');
 
 
 

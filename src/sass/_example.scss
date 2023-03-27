@@ -103,10 +103,6 @@ img {
 
 .load-more {
   display: none;
-}
-
-.isVisible{
-  display: flex;
   margin: 0 auto;
   margin-bottom: 20px;
   padding-block: 8px;
@@ -120,6 +116,11 @@ img {
   transition-property: color, background-color;
   transition-duration: 250ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.isVisible{
+  display: flex;
+  
   
 }
 
