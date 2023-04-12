@@ -83,7 +83,7 @@ async function getPictures() {
     });
 
     const response = await axios.get('https://pixabay.com/api/?' + `${searchParams}&q=` + form.elements.searchQuery.value);
-    const url = ('https://pixabay.com/api/?' + `${searchParams}&q=` + form.elements.searchQuery.value);
+    // const url = ('https://pixabay.com/api/?' + `${searchParams}&q=` + form.elements.searchQuery.value);
     // console.log(url);          
     return response;            
 }   
